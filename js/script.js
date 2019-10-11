@@ -1,26 +1,86 @@
-let menu = document.querySelector('.menu');
-let menuItem = document.querySelectorAll('.menu-item');
-let menuItem3 = menuItem[1];
-menu.removeChild(menuItem[1]);
-menu.insertBefore(menuItem3, menuItem[3]);
+window.addEventListener('DOMContentLoaded', function() {
 
+    let tab = document.querySelectorAll('.info-header-tab'),
+        info = document.querySelector('.info-header'),
+        tabContent = document.querySelectorAll('.info-tabcontent');
 
-let li = document.createElement('li');
-li.classList.add('menu-item');
-li.textContent = 'Пятый пункт';
-menu.appendChild(li);
+    function hideTabContent(a) {
+        for (let i = a; i < tabContent.length; i++) {
+            tabContent[i].classList.remove('show');
+            tabContent[i].classList.add('hide');
+        }
+    }
 
-// console.log(div);
-let body = document.querySelector('body');
-body.style.backgroundImage = 'url(../img/apple_true.jpg)';
+    hideTabContent(1);
 
-let title = document.querySelector('.title');
-title.textContent = 'Мы продаем только подлинную технику Apple';
+    function showTabContent(b) {
+        if (tabContent[b].classList.contains('hide')) {
+            tabContent[b].classList.remove('hide');
+            tabContent[b].classList.add('show');
+        }
+    }
 
-let columns = document.querySelectorAll('.column');
-let adv = document.querySelector('.adv');
-columns[1].removeChild(adv);
+    info.addEventListener('click', function(event) {
+        let target = event.target;
+        if (target && target.classList.contains('info-header-tab')) {
+            for(let i = 0; i < tab.length; i++) {
+                if (target == tab[i]) {
+                    hideTabContent(0);
+                    showTabContent(i);
+                    break;
+                }
+            }
+        }
 
-let promt = document.querySelector('#prompt');
-let yourOpinion = prompt("Ваше отношение к технике Apple?");   // Отношение к технике Apple
-promt.textContent = yourOpinion;
+    });
+
+    // Timer 
+
+    let deadline = '2018-11-21';
+
+    function getTimeRemaining(endtime) {
+        let t = Date.parse(endtime) - Date.parse(new Date()),
+        seconds = Math.floor((t/1000) % 60),
+        minutes = Math.floor((t/1000/60) % 60),
+        hours = Math.floor((t/(1000*60*60)));
+
+        return {
+            'total' : t,
+            'hours' : hours,
+            'minutes' : minutes,
+            'seconds' : seconds
+        };
+    }
+
+    function setClock(id, endtime) {
+        let timer = document.getElementById(id),
+            hours = timer.querySelector('.hours'),
+            minutes = timer.querySelector('.minutes'),
+            seconds = timer.querySelector('.seconds'),
+            timeInterval = setInterval(updateClock, 1000);
+            
+        function updateClock() {
+            let t = getTimeRemaining(endtime);
+
+            function addZero(num){
+                        if(num <= 9) {
+                            return '0' + num;
+                        } else {return num;}
+                    }
+
+            hours.textContent = addZero(t.hours);
+            minutes.textContent = addZero(t.minutes);
+            seconds.textContent = addZero(t.seconds);
+
+            if (t.total <= 0) {
+                clearInterval(timeInterval);
+                hours.textContent = '00';
+                minutes.textContent = '00';
+                seconds.textContent = '00';
+            }
+        }
+
+    }
+
+    setClock('timer', deadline);
+});
